@@ -1,0 +1,311 @@
+import type { Period } from "./types";
+
+// Civilizations, empires, dynasties and movements placed on the time-river.
+// World art sits on the upper axis; Indian art on the lower axis. Years are
+// numeric (negative = BCE) for timeline placement. Every entry links to a real
+// Wikipedia article.
+export const periods: Period[] = [
+  // ── INDIA ───────────────────────────────────────────────────────────────
+  {
+    id: "i-indus",
+    axis: "india",
+    name: "Indus Valley Civilization",
+    kind: "Civilization",
+    startYear: -3300,
+    endYear: -1300,
+    region: "Indus & Saraswati basins",
+    blurb:
+      "One of the world's earliest urban cultures, famed for planned cities, seals, terracotta and the earliest Indian bronze casting.",
+    wikipedia: "https://en.wikipedia.org/wiki/Indus_Valley_Civilisation",
+  },
+  {
+    id: "i-maurya",
+    axis: "india",
+    name: "Mauryan Empire",
+    kind: "Empire",
+    startYear: -322,
+    endYear: -185,
+    region: "Indian subcontinent",
+    blurb:
+      "India's first pan-Indian empire under Chandragupta and Ashoka, which gave us monumental polished-stone pillars and edicts.",
+    wikipedia: "https://en.wikipedia.org/wiki/Maurya_Empire",
+  },
+  {
+    id: "i-shunga",
+    axis: "india",
+    name: "Shunga Period",
+    kind: "Dynasty",
+    startYear: -185,
+    endYear: -73,
+    region: "Eastern & central India",
+    blurb:
+      "Successors to the Mauryas, associated with the great stupa railings and gateway reliefs at Bharhut and Sanchi.",
+    wikipedia: "https://en.wikipedia.org/wiki/Shunga_Empire",
+  },
+  {
+    id: "i-gupta",
+    axis: "india",
+    name: "Gupta Empire",
+    kind: "Empire",
+    startYear: 320,
+    endYear: 550,
+    region: "Northern India",
+    blurb:
+      "The 'classical' or golden age of Indian art, when the serene Sarnath Buddha type and refined temple forms crystallised.",
+    wikipedia: "https://en.wikipedia.org/wiki/Gupta_Empire",
+  },
+  {
+    id: "i-ajanta",
+    axis: "india",
+    name: "Ajanta Murals (Vakataka)",
+    kind: "Rock-cut caves",
+    startYear: -100,
+    endYear: 650,
+    region: "Maharashtra",
+    blurb:
+      "Buddhist rock-cut caves whose murals are the finest surviving ancient Indian painting, peaking under Vakataka patronage.",
+    wikipedia: "https://en.wikipedia.org/wiki/Ajanta_Caves",
+  },
+  {
+    id: "i-chalukya",
+    axis: "india",
+    name: "Chalukya Dynasty",
+    kind: "Dynasty",
+    startYear: 543,
+    endYear: 753,
+    region: "Deccan",
+    blurb:
+      "Builders of the experimental temples of Badami, Aihole and Pattadakal — a laboratory of South Indian temple architecture.",
+    wikipedia: "https://en.wikipedia.org/wiki/Chalukya_dynasty",
+  },
+  {
+    id: "i-pallava",
+    axis: "india",
+    name: "Pallava Dynasty",
+    kind: "Dynasty",
+    startYear: 275,
+    endYear: 897,
+    region: "Tamil country",
+    blurb:
+      "Patrons of Mahabalipuram's shore temples and rock-cut rathas, pioneering Dravidian stone architecture.",
+    wikipedia: "https://en.wikipedia.org/wiki/Pallava_dynasty",
+  },
+  {
+    id: "i-rashtrakuta",
+    axis: "india",
+    name: "Rashtrakuta (Ellora)",
+    kind: "Dynasty",
+    startYear: 753,
+    endYear: 982,
+    region: "Deccan",
+    blurb:
+      "Under the Rashtrakutas the colossal Kailasa temple at Ellora was carved top-down from a single rock.",
+    wikipedia: "https://en.wikipedia.org/wiki/Rashtrakuta_dynasty",
+  },
+  {
+    id: "i-chola",
+    axis: "india",
+    name: "Chola Dynasty",
+    kind: "Empire",
+    startYear: 848,
+    endYear: 1279,
+    region: "Tamil country",
+    blurb:
+      "The Cholas perfected the lost-wax bronze, giving the world the dancing Shiva Nataraja and the towering Brihadishvara temple.",
+    wikipedia: "https://en.wikipedia.org/wiki/Chola_dynasty",
+  },
+  {
+    id: "i-chandela",
+    axis: "india",
+    name: "Chandela (Khajuraho)",
+    kind: "Dynasty",
+    startYear: 950,
+    endYear: 1050,
+    region: "Central India",
+    blurb:
+      "The Chandelas raised the Khajuraho temples, whose sculpted walls are a high point of North Indian Nagara art.",
+    wikipedia: "https://en.wikipedia.org/wiki/Khajuraho_Group_of_Monuments",
+  },
+  {
+    id: "i-ganga",
+    axis: "india",
+    name: "Eastern Ganga (Konark)",
+    kind: "Dynasty",
+    startYear: 1078,
+    endYear: 1434,
+    region: "Odisha",
+    blurb:
+      "Builders of the Konark Sun Temple, conceived as the sun god's colossal stone chariot.",
+    wikipedia: "https://en.wikipedia.org/wiki/Eastern_Ganga_dynasty",
+  },
+  {
+    id: "i-vijayanagara",
+    axis: "india",
+    name: "Vijayanagara Empire",
+    kind: "Empire",
+    startYear: 1336,
+    endYear: 1646,
+    region: "South India",
+    blurb:
+      "A vast southern empire whose capital Hampi bristled with temples, pillared halls and the stone chariot of Vitthala.",
+    wikipedia: "https://en.wikipedia.org/wiki/Vijayanagara_Empire",
+  },
+  {
+    id: "i-mughal",
+    axis: "india",
+    name: "Mughal Painting",
+    kind: "Court atelier",
+    startYear: 1556,
+    endYear: 1707,
+    region: "North India",
+    blurb:
+      "Imperial workshops fused Persian, Indian and European modes into the jewel-like Mughal miniature.",
+    wikipedia: "https://en.wikipedia.org/wiki/Mughal_painting",
+  },
+  {
+    id: "i-rajput",
+    axis: "india",
+    name: "Rajput & Pahari Painting",
+    kind: "Schools",
+    startYear: 1600,
+    endYear: 1850,
+    region: "Rajasthan & Punjab Hills",
+    blurb:
+      "Courtly schools — Mewar, Kishangarh, Kangra, Basohli — that turned myth, music and devotion into lyrical painting.",
+    wikipedia: "https://en.wikipedia.org/wiki/Rajput_painting",
+  },
+  {
+    id: "i-company",
+    axis: "india",
+    name: "Company School",
+    kind: "School",
+    startYear: 1770,
+    endYear: 1880,
+    region: "British India",
+    blurb:
+      "Indian artists painting for European patrons in a hybrid Indo-European watercolour idiom.",
+    wikipedia: "https://en.wikipedia.org/wiki/Company_style",
+  },
+  {
+    id: "i-bengal",
+    axis: "india",
+    name: "Bengal School",
+    kind: "Movement",
+    startYear: 1900,
+    endYear: 1945,
+    region: "Bengal",
+    blurb:
+      "A nationalist revival led by Abanindranath Tagore that sought an authentically Indian modern art.",
+    wikipedia: "https://en.wikipedia.org/wiki/Bengal_School_of_Art",
+  },
+  {
+    id: "i-pag",
+    axis: "india",
+    name: "Progressive Artists' Group",
+    kind: "Movement",
+    startYear: 1947,
+    endYear: 2000,
+    region: "Bombay / India",
+    blurb:
+      "Post-independence modernists — Husain, Raza, Souza, Mehta and others — who forged a bold contemporary Indian language.",
+    wikipedia: "https://en.wikipedia.org/wiki/Progressive_Artists%27_Group",
+  },
+
+  // ── WORLD ───────────────────────────────────────────────────────────────
+  {
+    id: "w-renaissance",
+    axis: "world",
+    name: "Italian Renaissance",
+    kind: "Movement",
+    startYear: 1400,
+    endYear: 1600,
+    region: "Italy",
+    blurb:
+      "A rebirth of classical ideals, linear perspective and humanism that produced Leonardo, Michelangelo and Raphael.",
+    wikipedia: "https://en.wikipedia.org/wiki/Italian_Renaissance_painting",
+  },
+  {
+    id: "w-baroque",
+    axis: "world",
+    name: "Baroque",
+    kind: "Movement",
+    startYear: 1600,
+    endYear: 1750,
+    region: "Europe",
+    blurb:
+      "Drama, movement and chiaroscuro — from Caravaggio's tenebrism to the splendour of European courts.",
+    wikipedia: "https://en.wikipedia.org/wiki/Baroque_painting",
+  },
+  {
+    id: "w-dutch",
+    axis: "world",
+    name: "Dutch Golden Age",
+    kind: "Movement",
+    startYear: 1600,
+    endYear: 1700,
+    region: "Dutch Republic",
+    blurb:
+      "A merchant republic's love of light, interiors and ordinary life — Rembrandt and Vermeer at its summit.",
+    wikipedia: "https://en.wikipedia.org/wiki/Dutch_Golden_Age_painting",
+  },
+  {
+    id: "w-edo",
+    axis: "world",
+    name: "Edo Ukiyo-e",
+    kind: "School",
+    startYear: 1603,
+    endYear: 1868,
+    region: "Japan",
+    blurb:
+      "Woodblock 'pictures of the floating world' whose flat colour and bold design would electrify Europe.",
+    wikipedia: "https://en.wikipedia.org/wiki/Ukiyo-e",
+  },
+  {
+    id: "w-impressionism",
+    axis: "world",
+    name: "Impressionism",
+    kind: "Movement",
+    startYear: 1860,
+    endYear: 1890,
+    region: "France",
+    blurb:
+      "Painters of light and the fleeting moment who left the studio for open air — Monet, Renoir, Degas.",
+    wikipedia: "https://en.wikipedia.org/wiki/Impressionism",
+  },
+  {
+    id: "w-postimpressionism",
+    axis: "world",
+    name: "Post-Impressionism",
+    kind: "Movement",
+    startYear: 1885,
+    endYear: 1910,
+    region: "France",
+    blurb:
+      "Van Gogh, Cézanne and Gauguin pushed beyond Impressionism toward expression, structure and symbol.",
+    wikipedia: "https://en.wikipedia.org/wiki/Post-Impressionism",
+  },
+  {
+    id: "w-vienna",
+    axis: "world",
+    name: "Vienna Secession",
+    kind: "Movement",
+    startYear: 1897,
+    endYear: 1920,
+    region: "Austria",
+    blurb:
+      "A break from academic art toward ornament, symbolism and gold — epitomised by Gustav Klimt.",
+    wikipedia: "https://en.wikipedia.org/wiki/Vienna_Secession",
+  },
+  {
+    id: "w-modern",
+    axis: "world",
+    name: "Modern Art (Cubism→Pop)",
+    kind: "Movements",
+    startYear: 1907,
+    endYear: 1980,
+    region: "Europe & America",
+    blurb:
+      "From Picasso's Cubism through Surrealism and Abstract Expressionism to Pop — a century of radical reinvention.",
+    wikipedia: "https://en.wikipedia.org/wiki/Modern_art",
+  },
+];
