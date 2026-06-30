@@ -1,10 +1,11 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import type { Artist, Artwork, Period } from "@/lib/data/types";
 import type { ImageMeta } from "@/lib/img";
+import { artImage } from "@/lib/img";
 import { useMuseum } from "@/lib/store";
 import InspectModal from "@/components/inspect/InspectModal";
 
@@ -28,30 +29,56 @@ interface Props {
 export default function MuseumClient({ artist, period, works, images, allArtworks }: Props) {
   const [locked, setLocked] = useState(false);
   const [focused, setFocused] = useState<Artwork | null>(null);
+  const [showList, setShowList] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
+  const [isTouch, setIsTouch] = useState(false);
   const inspect = useMuseum((s) => s.inspect);
   const inspecting = useMuseum((s) => s.inspecting);
+
+  useEffect(() => {
+    const touch = window.matchMedia("(pointer: coarse)").matches;
+    setIsTouch(touch);
+    if (touch) setShowList(true); // on touch, surface the browseable works list
+  }, []);
 
   return (
     <main className="relative h-screen w-screen overflow-hidden bg-ink">
       {locked && <div className="crosshair" />}
 
-      <Gallery3D
-        artist={artist}
-        works={works}
-        images={images}
-        onInspect={(w) => inspect(w)}
-        onFocus={setFocused}
-        onLockChange={setLocked}
-      />
+      {!isTouch && (
+        <Gallery3D
+          artist={artist}
+          works={works}
+          images={images}
+          onInspect={(w) => inspect(w)}
+          onFocus={setFocused}
+          onLockChange={setLocked}
+        />
+      )}
+      {isTouch && (
+        <div className="absolute inset-0 grid place-items-center bg-gradient-to-b from-gallery to-ink" />
+      )}
 
       {/* top bar */}
       <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-start justify-between p-5">
-        <Link
-          href="/"
-          className="pointer-events-auto rounded-full border border-white/15 bg-black/50 px-4 py-2 text-xs text-ivory backdrop-blur transition hover:border-gold"
-        >
-          ← Timeline
-        </Link>
+        <div className="pointer-events-auto flex gap-2">
+          <Link
+            href="/"
+            className="rounded-full border border-white/15 bg-black/50 px-4 py-2 text-xs text-ivory backdrop-blur transition hover:border-gold"
+          >
+            ← Timeline
+          </Link>
+          <button
+            onClick={() => setShowList((v) => !v)}
+            className={`rounded-full border px-4 py-2 text-xs backdrop-blur transition ${
+              showList
+                ? "border-gold bg-gold/15 text-gold"
+                : "border-white/15 bg-black/50 text-ivory hover:border-gold"
+            }`}
+          >
+            ☰ Works ({works.length})
+          </button>
+        </div>
         <div className="text-right">
           <h1 className="font-serif text-2xl text-ivory drop-shadow">{artist.name}</h1>
           <p className="text-xs text-gold/80">
@@ -74,9 +101,7 @@ export default function MuseumClient({ artist, period, works, images, allArtwork
             <p className="text-[11px] text-gold/80">
               {focused.date} · {focused.mediumDetail}
             </p>
-            <p className="mt-1 text-[10px] uppercase tracking-widest text-white/40">
-              click to inspect
-            </p>
+            <p className="mt-1 text-[10px] uppercase tracking-widest text-white/40">click to inspect</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -89,25 +114,114 @@ export default function MuseumClient({ artist, period, works, images, allArtwork
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="absolute inset-0 z-30 grid place-items-center bg-ink/70 backdrop-blur-sm"
+            style={{ pointerEvents: isTouch ? "auto" : "none" }}
           >
             <div className="max-w-md px-6 text-center">
               <p className="mb-1 text-xs uppercase tracking-[0.3em] text-gold/70">
                 {works.length} works · verified Wikimedia data
               </p>
               <h2 className="font-serif text-3xl text-ivory">{artist.name}</h2>
-              <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-white/70">
-                {artist.bio}
-              </p>
-              <p className="mt-5 text-xs text-white/50">
-                Move with <Key>W</Key> <Key>A</Key> <Key>S</Key> <Key>D</Key> · look with the mouse ·
-                click a painting to inspect · <Key>Esc</Key> to release the cursor
-              </p>
-              <p
-                className="mt-6 inline-block animate-pulse rounded-full border border-gold/50 px-6 py-2.5 text-sm text-gold"
-              >
-                Click anywhere to enter the gallery
-              </p>
+              <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-white/70">{artist.bio}</p>
+              {isTouch ? (
+                <>
+                  <p className="mt-5 text-xs text-white/50">
+                    The walkable 3D gallery is best experienced on a desktop with a mouse. On this
+                    device, browse every work in full detail instead.
+                  </p>
+                  <button
+                    onClick={() => setShowList(true)}
+                    className="mt-6 inline-block rounded-full border border-gold/50 px-6 py-2.5 text-sm text-gold"
+                  >
+                    ☰ Browse the {works.length} works
+                  </button>
+                </>
+              ) : (
+                <>
+                  <p className="mt-5 text-xs text-white/50">
+                    Move with <Key>W</Key> <Key>A</Key> <Key>S</Key> <Key>D</Key> · look with the mouse ·
+                    click a painting to inspect · <Key>Esc</Key> to release the cursor
+                  </p>
+                  <p className="mt-6 inline-block animate-pulse rounded-full border border-gold/50 px-6 py-2.5 text-sm text-gold">
+                    Click anywhere to enter the gallery
+                  </p>
+                </>
+              )}
             </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* works list panel */}
+      <AnimatePresence>
+        {showList && (
+          <motion.aside
+            initial={{ opacity: 0, x: -24 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -24 }}
+            className="absolute left-5 top-20 z-30 max-h-[70vh] w-[300px] overflow-y-auto rounded-xl border border-white/10 bg-ink/95 p-3 shadow-2xl backdrop-blur-xl"
+          >
+            <p className="mb-2 px-1 text-[10px] uppercase tracking-widest text-gold/60">
+              Works in this hall
+            </p>
+            <div className="space-y-1">
+              {works.map((w) => (
+                <button
+                  key={w.id}
+                  onClick={() => inspect(w)}
+                  className="flex w-full items-center gap-3 rounded-lg p-1.5 text-left transition hover:bg-white/5"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={artImage(w, images[w.id], 120)}
+                    alt={w.title}
+                    loading="lazy"
+                    className="h-10 w-14 rounded object-cover"
+                    onError={(e) => (e.currentTarget.style.visibility = "hidden")}
+                  />
+                  <span className="min-w-0">
+                    <span className="block truncate text-sm text-ivory">{w.title}</span>
+                    <span className="block truncate text-[11px] text-white/40">{w.date}</span>
+                  </span>
+                </button>
+              ))}
+            </div>
+          </motion.aside>
+        )}
+      </AnimatePresence>
+
+      {/* help toggle */}
+      {!isTouch && (
+        <button
+          onClick={() => setShowHelp((v) => !v)}
+          className="absolute bottom-5 right-5 z-30 grid h-10 w-10 place-items-center rounded-full border border-white/15 bg-black/60 text-ivory backdrop-blur transition hover:border-gold"
+          aria-label="Controls help"
+        >
+          ?
+        </button>
+      )}
+      <AnimatePresence>
+        {showHelp && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 12 }}
+            className="absolute bottom-20 right-5 z-30 w-64 rounded-xl border border-white/10 bg-ink/95 p-4 text-sm text-white/75 shadow-2xl backdrop-blur-xl"
+          >
+            <p className="mb-2 text-xs uppercase tracking-widest text-gold/70">Controls</p>
+            <ul className="space-y-1.5">
+              <li>
+                <Key>W</Key>
+                <Key>A</Key>
+                <Key>S</Key>
+                <Key>D</Key> — move
+              </li>
+              <li>Mouse — look around</li>
+              <li>Click a painting — inspect</li>
+              <li>
+                <Key>Esc</Key> — release cursor
+              </li>
+              <li>☰ Works — jump to any piece</li>
+            </ul>
           </motion.div>
         )}
       </AnimatePresence>

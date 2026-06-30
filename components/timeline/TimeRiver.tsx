@@ -15,6 +15,7 @@ interface Props {
   artists: Artist[];
   artworks: Artwork[];
   images: Record<string, ImageMeta>;
+  portraits: Record<string, string | undefined>;
   artistsWithWorks: Set<string>;
 }
 
@@ -50,6 +51,7 @@ export default function TimeRiver({
   artists,
   artworks,
   images,
+  portraits,
   artistsWithWorks,
 }: Props) {
   const router = useRouter();
@@ -61,6 +63,18 @@ export default function TimeRiver({
   const [zoom, setZoom] = useState(0.22);
   const [offset, setOffset] = useState(40);
   const [hover, setHover] = useState<string | null>(null);
+  const [hoverArtist, setHoverArtist] = useState<Artist | null>(null);
+
+  const periodName = useMemo(() => {
+    const m: Record<string, string> = {};
+    periods.forEach((p) => (m[p.id] = p.name));
+    return m;
+  }, [periods]);
+  const workCount = useMemo(() => {
+    const m: Record<string, number> = {};
+    artworks.forEach((w) => (m[w.artistId] = (m[w.artistId] || 0) + 1));
+    return m;
+  }, [artworks]);
 
   // Initialise zoom to fit once we know the width.
   useEffect(() => {
@@ -109,7 +123,6 @@ export default function TimeRiver({
       const rect = containerRef.current?.getBoundingClientRect();
       if (!rect) return;
       if (e.ctrlKey || e.metaKey || Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-        // zoom
         const factor = e.deltaY < 0 ? 1.12 : 1 / 1.12;
         zoomAround(e.clientX - rect.left, factor);
       } else {
@@ -119,7 +132,7 @@ export default function TimeRiver({
     [zoomAround, clampOffset]
   );
 
-  // Drag to pan
+  // Drag to pan (also works for touch via pointer events)
   const drag = useRef<{ x: number; o: number } | null>(null);
   const onPointerDown = (e: React.PointerEvent) => {
     drag.current = { x: e.clientX, o: offset };
@@ -142,7 +155,6 @@ export default function TimeRiver({
     [periods, zoom]
   );
 
-  // Century gridlines
   const ticks = useMemo(() => {
     const step = zoom > 1.2 ? 100 : zoom > 0.5 ? 200 : 500;
     const out: number[] = [];
@@ -169,10 +181,7 @@ export default function TimeRiver({
       }}
     >
       {/* center axis */}
-      <div
-        className="pointer-events-none absolute left-0 right-0"
-        style={{ top: "50%" }}
-      >
+      <div className="pointer-events-none absolute left-0 right-0" style={{ top: "50%" }}>
         <div className="h-px w-full hairline" />
       </div>
 
@@ -262,9 +271,7 @@ export default function TimeRiver({
           >
             <span
               className={`block h-6 w-6 overflow-hidden rounded-[3px] border shadow-md transition-all duration-200 ${
-                isHover
-                  ? "scale-[2.6] border-gold"
-                  : "border-white/30 group-hover:border-gold/70"
+                isHover ? "scale-[2.6] border-gold" : "border-white/30 group-hover:border-gold/70"
               }`}
               style={{ transformOrigin: above ? "bottom center" : "top center" }}
             >
@@ -274,9 +281,7 @@ export default function TimeRiver({
                 alt={w.title}
                 loading="lazy"
                 className="h-full w-full object-cover"
-                onError={(e) => {
-                  (e.currentTarget.style.opacity = "0");
-                }}
+                onError={(e) => (e.currentTarget.style.opacity = "0")}
               />
             </span>
             {isHover && (
@@ -305,11 +310,13 @@ export default function TimeRiver({
             onClick={() =>
               hasMuseum ? router.push(`/museum/${a.slug}`) : window.open(a.wikipedia, "_blank")
             }
-            onMouseEnter={() => setHover(a.id)}
+            onMouseEnter={() => {
+              setHover(a.id);
+              setHoverArtist(a);
+            }}
             onMouseLeave={() => setHover(null)}
             className="absolute z-[7] -translate-x-1/2 -translate-y-1/2"
             style={{ left, top: "50%" }}
-            title={`${a.name} (${a.life})${hasMuseum ? " — enter museum" : ""}`}
           >
             <span
               className={`block h-2.5 w-2.5 rounded-full border transition ${
@@ -332,6 +339,73 @@ export default function TimeRiver({
         );
       })}
 
+      {/* artist hover card */}
+      {hoverArtist &&
+        (() => {
+          const left = x(hoverArtist.year);
+          if (left < -200 || left > width + 200) return null;
+          const above = hoverArtist.axis === "world";
+          const hasMuseum = artistsWithWorks.has(hoverArtist.id);
+          const portrait = portraits[hoverArtist.id];
+          const cardLeft = Math.max(12, Math.min(width - 272, left - 130));
+          return (
+            <div
+              onMouseLeave={() => setHoverArtist(null)}
+              className="absolute z-[15] w-[260px] animate-fadeUp rounded-xl border border-white/10 bg-ink/95 p-4 shadow-2xl backdrop-blur-xl"
+              style={{
+                left: cardLeft,
+                top: above ? "calc(50% - 250px)" : "calc(50% + 70px)",
+              }}
+            >
+              <div className="flex items-center gap-3">
+                {portrait ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={portrait} alt={hoverArtist.name} className="h-12 w-12 rounded-full object-cover" />
+                ) : (
+                  <span
+                    className={`grid h-12 w-12 place-items-center rounded-full text-sm font-semibold ${
+                      above ? "bg-world/25 text-world" : "bg-india/25 text-india"
+                    }`}
+                  >
+                    {hoverArtist.name.split(" ").slice(-1)[0][0]}
+                  </span>
+                )}
+                <div className="min-w-0">
+                  <p className="truncate font-serif text-base text-ivory">{hoverArtist.name}</p>
+                  <p className="text-[11px] text-gold/80">{hoverArtist.life}</p>
+                </div>
+              </div>
+              <p className="mt-2 text-[11px] text-white/45">
+                {periodName[hoverArtist.periodId]} · {hoverArtist.nationality}
+                {workCount[hoverArtist.id] ? ` · ${workCount[hoverArtist.id]} works` : ""}
+              </p>
+              <p className="mt-2 line-clamp-4 text-[12px] leading-relaxed text-white/70">
+                {hoverArtist.bio}
+              </p>
+              <div className="mt-3 flex gap-2">
+                {hasMuseum ? (
+                  <button
+                    onClick={() => router.push(`/museum/${hoverArtist.slug}`)}
+                    className="flex-1 rounded-full bg-gold px-3 py-1.5 text-[12px] font-medium text-ink transition hover:bg-goldsoft"
+                  >
+                    Enter museum →
+                  </button>
+                ) : (
+                  <span className="flex-1 rounded-full border border-white/10 px-3 py-1.5 text-center text-[11px] text-white/40">
+                    Biography
+                  </span>
+                )}
+                <button
+                  onClick={() => window.open(hoverArtist.wikipedia, "_blank")}
+                  className="rounded-full border border-white/15 px-3 py-1.5 text-[12px] text-white/70 transition hover:border-gold hover:text-gold"
+                >
+                  Wiki ↗
+                </button>
+              </div>
+            </div>
+          );
+        })()}
+
       {/* zoom controls */}
       <div className="absolute bottom-4 right-4 z-20 flex items-center gap-2">
         <button
@@ -350,7 +424,7 @@ export default function TimeRiver({
         </button>
       </div>
 
-      <div className="pointer-events-none absolute bottom-4 left-1/2 z-10 -translate-x-1/2 text-center text-[11px] text-white/30">
+      <div className="pointer-events-none absolute bottom-4 left-1/2 z-10 hidden -translate-x-1/2 text-center text-[11px] text-white/30 sm:block">
         drag to pan · scroll to move · ⌘/Ctrl-scroll to zoom · gold dots are walkable museums
       </div>
     </div>

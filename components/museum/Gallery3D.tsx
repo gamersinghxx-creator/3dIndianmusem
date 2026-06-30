@@ -27,7 +27,6 @@ const HALF_W = 4;
 const EYE = 1.65;
 const SPACING = 5;
 
-// Placement of each work along the hall walls.
 function usePlacements(works: Artwork[]) {
   return useMemo(() => {
     return works.map((w, i) => {
@@ -83,7 +82,6 @@ function Frame({
   const H = 2.1;
   const W = Math.min(3.4, H * aspect);
   const target = useMemo(() => new THREE.Object3D(), []);
-  const towardCenter = x < 0 ? x + 1.4 : x - 1.4;
 
   return (
     <group position={[x, 0, z]} rotation={[0, rotY, 0]}>
@@ -163,7 +161,12 @@ function Hall({ length }: { length: number }) {
       </mesh>
       {/* walls */}
       {[-1, 1].map((s) => (
-        <mesh key={s} position={[s * HALF_W, 2.5, zMid]} rotation={[0, -s * Math.PI / 2, 0]} receiveShadow>
+        <mesh
+          key={s}
+          position={[s * HALF_W, 2.5, zMid]}
+          rotation={[0, (-s * Math.PI) / 2, 0]}
+          receiveShadow
+        >
           <planeGeometry args={[length + 8, 5]} />
           <meshStandardMaterial color="#1c1f26" roughness={0.95} />
         </mesh>
@@ -188,7 +191,7 @@ function Player({
   onLockChange,
 }: {
   bounds: { zMin: number };
-  onFocus: (w: string | null) => void;
+  onFocus: (id: string | null) => void;
   onInspect: (id: string) => void;
   onLockChange: (b: boolean) => void;
 }) {
@@ -245,7 +248,7 @@ function Player({
         id = wid;
         break;
       }
-      if (h.distance < 6) break; // a wall/frame is closer than any artwork
+      if (h.distance < 6) break;
     }
     if (id !== focused.current) {
       focused.current = id;
@@ -254,10 +257,7 @@ function Player({
   });
 
   return (
-    <PointerLockControls
-      onLock={() => onLockChange(true)}
-      onUnlock={() => onLockChange(false)}
-    />
+    <PointerLockControls onLock={() => onLockChange(true)} onUnlock={() => onLockChange(false)} />
   );
 }
 
@@ -282,7 +282,11 @@ export default function Gallery3D({
     <Canvas
       shadows
       dpr={[1, 1.8]}
-      gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.05 }}
+      gl={{
+        antialias: true,
+        toneMapping: THREE.ACESFilmicToneMapping,
+        toneMappingExposure: 1.05,
+      }}
       camera={{ fov: 70, near: 0.05, far: 100, position: [0, EYE, 1] }}
     >
       <color attach="background" args={["#070809"]} />

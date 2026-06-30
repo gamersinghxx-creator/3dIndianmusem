@@ -21,20 +21,39 @@ export default function InspectModal({ images, allArtworks }: Props) {
 
   const [scale, setScale] = useState(1);
   const [pos, setPos] = useState({ x: 0, y: 0 });
+  const [loaded, setLoaded] = useState(false);
   const drag = useRef<{ x: number; y: number; px: number; py: number } | null>(null);
 
   useEffect(() => {
     setScale(1);
     setPos({ x: 0, y: 0 });
+    setLoaded(false);
   }, [work?.id]);
+
+  // Browse the same artist's works (or, failing that, the same period) with arrows.
+  const siblings = work ? allArtworks.filter((w) => w.artistId === work.artistId) : [];
+  const pool =
+    siblings.length > 1
+      ? [...siblings].sort((a, b) => a.year - b.year)
+      : work
+        ? allArtworks.filter((w) => w.periodId === work.periodId).sort((a, b) => a.year - b.year)
+        : [];
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") inspect(null);
+      if (!work) return;
+      if (e.key === "Escape") return inspect(null);
+      if ((e.key === "ArrowRight" || e.key === "ArrowLeft") && pool.length > 1) {
+        const idx = pool.findIndex((w) => w.id === work.id);
+        if (idx === -1) return;
+        const next =
+          e.key === "ArrowRight" ? (idx + 1) % pool.length : (idx - 1 + pool.length) % pool.length;
+        inspect(pool[next]);
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [inspect]);
+  }, [inspect, work, pool]);
 
   if (!work) return null;
 
@@ -63,6 +82,12 @@ export default function InspectModal({ images, allArtworks }: Props) {
   };
   const onUp = () => (drag.current = null);
 
+  const step = (dir: number) => {
+    const i = pool.findIndex((w) => w.id === work.id);
+    if (i === -1) return;
+    inspect(pool[(i + dir + pool.length) % pool.length]);
+  };
+
   return (
     <AnimatePresence>
       <motion.div
@@ -89,6 +114,14 @@ export default function InspectModal({ images, allArtworks }: Props) {
             onPointerUp={onUp}
             style={{ cursor: scale > 1 ? "grab" : "zoom-in" }}
           >
+            {!loaded && (
+              <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-white/[0.04] to-white/[0.01]">
+                <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+                <div className="grid h-full place-items-center text-xs tracking-widest text-white/30">
+                  loading high resolution…
+                </div>
+              </div>
+            )}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={hiRes}
@@ -98,11 +131,36 @@ export default function InspectModal({ images, allArtworks }: Props) {
               style={{
                 transform: `translate(-50%, -50%) translate(${pos.x}px, ${pos.y}px) scale(${scale})`,
                 transition: drag.current ? "none" : "transform 0.15s ease-out",
+                opacity: loaded ? 1 : 0,
               }}
+              onLoad={() => setLoaded(true)}
               onError={(e) => {
-                (e.currentTarget as HTMLImageElement).src = artImage(work, undefined, 1600);
+                const img = e.currentTarget as HTMLImageElement;
+                const fallback = artImage(work, undefined, 1600);
+                if (img.src !== fallback) img.src = fallback;
+                else setLoaded(true);
               }}
             />
+
+            {pool.length > 1 && (
+              <>
+                <button
+                  onClick={() => step(-1)}
+                  className="absolute left-3 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-black/50 text-xl text-ivory backdrop-blur transition hover:border-gold"
+                  aria-label="Previous work"
+                >
+                  ‹
+                </button>
+                <button
+                  onClick={() => step(1)}
+                  className="absolute right-3 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-black/50 text-xl text-ivory backdrop-blur transition hover:border-gold"
+                  aria-label="Next work"
+                >
+                  ›
+                </button>
+              </>
+            )}
+
             <div className="absolute bottom-3 left-3 flex gap-2">
               <button
                 onClick={() => setScale((s) => Math.min(6, s * 1.3))}
@@ -214,6 +272,9 @@ export default function InspectModal({ images, allArtworks }: Props) {
             >
               Read on Wikipedia ↗
             </a>
+            {pool.length > 1 && (
+              <p className="mt-3 text-[10px] text-white/30">Use ← → to browse works</p>
+            )}
           </div>
         </motion.div>
       </motion.div>

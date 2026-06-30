@@ -10,8 +10,7 @@
  * This is the project's only data ingestion path, and it uses ONLY the
  * Wikimedia Commons API — no invented data. Run with:  npm run db:seed
  *
- * Requires DATABASE_URL in .env.local. The script loads it from the environment
- * (Next.js / the user's shell). It is safe to re-run; it upserts by id.
+ * Requires DATABASE_URL in .env.local. Safe to re-run; it upserts by id.
  */
 import { config as loadEnv } from "dotenv";
 loadEnv({ path: ".env.local" });
@@ -97,13 +96,11 @@ async function main() {
       const info = await fetchCommons(a.portraitFile, 600);
       portraitUrl = info?.thumbUrl ?? info?.url ?? null;
     }
-    await db
-      .insert(schema.artists)
-      .values({ ...a, portraitFile: a.portraitFile ?? null, portraitUrl })
-      .onConflictDoUpdate({
-        target: schema.artists.id,
-        set: { ...a, portraitFile: a.portraitFile ?? null, portraitUrl },
-      });
+    const row = { ...a, portraitFile: a.portraitFile ?? null, portraitUrl };
+    await db.insert(schema.artists).values(row).onConflictDoUpdate({
+      target: schema.artists.id,
+      set: row,
+    });
   }
   console.log(`  ✓ ${artists.length} artists`);
 
