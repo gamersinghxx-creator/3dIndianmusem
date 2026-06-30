@@ -263,15 +263,6 @@ export default function InspectModal({ images, allArtworks }: Props) {
                 </div>
               </div>
             )}
-
-            <a
-              href={work.wikipedia}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-6 inline-flex w-fit items-center gap-2 rounded-full border border-gold/40 px-4 py-2 text-xs text-gold transition hover:bg-gold hover:text-ink"
-            >
-              Read on Wikipedia ↗
-            </a>
             {pool.length > 1 && (
               <p className="mt-3 text-[10px] text-white/30">Use ← → to browse works</p>
             )}

@@ -7,6 +7,7 @@ import { useMuseum } from "@/lib/store";
 import TimeRiver from "./TimeRiver";
 import SearchResults from "./SearchResults";
 import InspectModal from "@/components/inspect/InspectModal";
+import InfoModal from "@/components/inspect/InfoModal";
 
 // Plain (JSON-serialisable) shape passed from the server page.
 interface CatalogProp {
@@ -155,6 +156,7 @@ export default function TimelineExperience({ catalog }: { catalog: CatalogProp }
       </div>
 
       <InspectModal images={catalog.images} allArtworks={catalog.artworks} />
+      <InfoModal />
     </main>
   );
 }

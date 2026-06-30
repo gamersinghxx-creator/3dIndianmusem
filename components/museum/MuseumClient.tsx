@@ -8,6 +8,7 @@ import type { ImageMeta } from "@/lib/img";
 import { artImage } from "@/lib/img";
 import { useMuseum } from "@/lib/store";
 import InspectModal from "@/components/inspect/InspectModal";
+import InfoModal from "@/components/inspect/InfoModal";
 
 const Gallery3D = dynamic(() => import("./Gallery3D"), {
   ssr: false,
@@ -227,6 +228,7 @@ export default function MuseumClient({ artist, period, works, images, allArtwork
       </AnimatePresence>
 
       <InspectModal images={images} allArtworks={allArtworks} />
+      <InfoModal />
     </main>
   );
 }

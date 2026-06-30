@@ -25,7 +25,7 @@ export default function SearchResults({
   artistsWithWorks,
 }: Props) {
   const router = useRouter();
-  const { query, setQuery, inspect } = useMuseum();
+  const { query, setQuery, inspect, setInfo } = useMuseum();
   const q = query.trim().toLowerCase();
 
   const { artistHits, workHits, periodHits } = useMemo(() => {
@@ -85,7 +85,7 @@ export default function SearchResults({
               {periodHits.map((p) => (
                 <button
                   key={p.id}
-                  onClick={() => window.open(p.wikipedia, "_blank")}
+                  onClick={() => { setQuery(""); setInfo({ title: p.name, subtitle: p.kind, body: p.blurb, tag: p.kind }); }}
                   className="flex w-full items-center gap-3 rounded-lg px-2 py-1.5 text-left hover:bg-white/5"
                 >
                   <span
@@ -108,7 +108,7 @@ export default function SearchResults({
                     key={a.id}
                     onClick={() => {
                       setQuery("");
-                      hasMuseum ? router.push(`/museum/${a.slug}`) : window.open(a.wikipedia, "_blank");
+                      hasMuseum ? router.push(`/museum/${a.slug}`) : setInfo({ title: a.name, subtitle: `${a.life} · ${a.nationality}`, body: a.bio, tag: "Artist" });
                     }}
                     className="flex w-full items-center gap-3 rounded-lg px-2 py-1.5 text-left hover:bg-white/5"
                   >
