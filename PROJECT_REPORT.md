@@ -1,5 +1,20 @@
 # PROJECT REPORT — chronological work log
 
+## 2026-06-30 (Phase B complete) — immersive 3D galleries
+
+**Added**
+- Era-specific gallery architecture in `Gallery3D.tsx`: sandstone **temple halls with pillars** (Indian dynasties), warm **salon with red carpet** (Old Masters), bright **white-cube** (moderns); warm museum lighting (ambient + hemisphere + ceiling downlights + emissive skylight strip), far-wall artist nameplate, gilt frames + placards.
+- **Guided cinematic auto-tour** (`TourCam`): eased camera fly-through that visits each artwork, dwells, and shows its nameplate; start from the entry overlay or top bar, exit anytime.
+- Atmosphere: drifting **dust motes** (drei `Sparkles`), subtle walking **head-bob**, and an optional gentle **ambient room tone** (WebAudio drone, user-gesture started, default off, toggle button).
+- All Wikipedia redirects replaced earlier by an in-app `InfoModal`; timeline rebuilt with per-era cells + constellations + cosmic parallax background.
+
+**Verified:** tsc + next build clean; museum routes 200 across eras.
+
+**Pending:** Phase C (content breadth), Phase D (Vercel deploy + Playwright QA), mobile walk controls, Next.js security patch.
+
+---
+
+
 Newest entries first. Every substantial change records: date, what changed, files touched, why, and what remains.
 
 ---
