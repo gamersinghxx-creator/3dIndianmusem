@@ -132,7 +132,7 @@ function Hall({ length, style, title }: { length: number; style: Style; title: s
           <mesh position={[0, 0.22, 0]}><boxGeometry args={[1.3, 0.32, 0.34]} /><meshStandardMaterial color={"#241a11"} roughness={0.8} /></mesh>
         </group>
       ))}
-      {slotZs.map((pz, i) => <pointLight key={`pl-${i}`} position={[0, 4.6, pz]} intensity={6} distance={9} color={style.key} />)}
+      {slotZs.map((pz, i) => <pointLight key={`pl-${i}`} position={[0, 4.6, pz]} intensity={11} distance={12} color={style.key} />)}
     </group>
   );
 }
@@ -223,7 +223,7 @@ export default function Gallery3D({ artist, period, works, images, tour, onInspe
   return (
     <Canvas shadows dpr={[1, 1.8]} gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.15 }} camera={{ fov: 70, near: 0.05, far: 100, position: [0, EYE, 1] }}>
       <color attach="background" args={[bgCol]} />
-      <fog attach="fog" args={[bgCol, 14, length + 18]} />
+      <fog attach="fog" args={[bgCol, 26, length + 60]} />
       <ambientLight intensity={style.ambient} />
       <hemisphereLight args={[style.hemiSky, style.hemiGround, style.hemiInt]} />
       <directionalLight position={[2, 6, 2]} intensity={0.35} color={style.key} />
@@ -235,9 +235,9 @@ export default function Gallery3D({ artist, period, works, images, tour, onInspe
       <Suspense fallback={null}>
         <Hall length={length} style={style} title={artist.name} />
         {placements.map((p) => (
-          <Frame key={p.work.id} work={p.work} url={artImage(p.work, images[p.work.id], 1200)} x={p.x} z={p.z} rotY={p.rotY} accent={style.accent} />
+          <Frame key={p.work.id} work={p.work} url={artImage(p.work, images[p.work.id], 900)} x={p.x} z={p.z} rotY={p.rotY} accent={style.accent} />
         ))}
-        <Sparkles count={70} scale={[HALF_W * 2 - 1, 3.4, length]} position={[0, 2.2, zMid]} size={2.4} speed={0.25} opacity={0.45} color={style.mote} />
+        <Sparkles count={34} scale={[HALF_W * 2 - 1, 3, Math.min(length, 44)]} position={[0, 2.2, -Math.min(length, 44) / 2]} size={2} speed={0.2} opacity={0.3} color={style.mote} />
       </Suspense>
       {tour ? (
         <TourCam stops={tourStops} onFocus={(id) => onFocus(id ? byId[id] ?? null : null)} onEnd={onTourEnd} />

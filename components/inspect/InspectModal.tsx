@@ -221,8 +221,8 @@ export default function InspectModal({ images, allArtworks }: Props) {
               <Row k="Timeline" v={fmtYear(work.year)} />
             </dl>
 
-            <Section title="The story">{work.story}</Section>
-            <Section title="Why it matters">{work.significance}</Section>
+            {work.story && <Section title="The story">{work.story}</Section>}
+            {work.significance && <Section title="Why it matters">{work.significance}</Section>}
 
             {work.funFacts?.length > 0 && (
               <div className="mt-5">
