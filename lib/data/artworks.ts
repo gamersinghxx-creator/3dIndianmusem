@@ -712,7 +712,7 @@ export const artworks: Artwork[] = [
     story: "Vermeer's luminous portrait of his home city seen across the harbour, its towers catching a break of sunlight after rain.",
     significance: "Among the greatest cityscapes ever painted; Proust called it the most beautiful painting in the world.",
     funFacts: ["Vermeer used tiny dots of light to render glittering reflections.", "It is one of only two cityscapes Vermeer is known to have painted."],
-    commonsFile: "Johannes Vermeer - Gezicht op Delft - Google Art Project.jpg",
+    commonsFile: "View of Delft, by Johannes Vermeer.jpg",
     wikipedia: "https://en.wikipedia.org/wiki/View_of_Delft", publicDomain: true,
   },
   {
@@ -767,7 +767,7 @@ export const artworks: Artwork[] = [
     story: "A shaft of light cuts the gloom as Christ points to the tax-collector Matthew, who gestures in disbelief — 'Me?'",
     significance: "A defining work of the Baroque, whose dramatic light (tenebrism) and street-level realism reshaped European painting.",
     funFacts: ["Christ's pointing hand echoes Adam's in Michelangelo's Creation.", "The scene is set in a contemporary Roman tavern, not antiquity."],
-    commonsFile: "The Calling of Saint Matthew-Caravaggio (1599-1600).jpg",
+    commonsFile: "Caravaggio, Michelangelo Merisi da - The Calling of Saint Matthew - 1599-1600 (hi res).jpg",
     wikipedia: "https://en.wikipedia.org/wiki/The_Calling_of_St_Matthew", publicDomain: true,
   },
   {
@@ -802,7 +802,7 @@ export const artworks: Artwork[] = [
     story: "One of the largest rock reliefs on earth: gods, sages, animals and a natural cleft staged as the sacred river descending to earth.",
     significance: "A masterpiece of Pallava sculpture, full of life from elephants to a comic ascetic cat.",
     funFacts: ["A natural fissure was used to channel real water down the relief.", "Also known as Arjuna's Penance."],
-    commonsFile: "Descent of the Ganges, Mamallapuram.jpg",
+    commonsFile: "Descent of the Ganges, Pallava period, 7th century, Mahabalipuram (24) (37442379752).jpg",
     wikipedia: "https://en.wikipedia.org/wiki/Descent_of_the_Ganges_(Mahabalipuram)", publicDomain: true,
   },
   {
@@ -824,7 +824,7 @@ export const artworks: Artwork[] = [
     story: "Built by a Chalukya queen to mark a military victory, modelled on the Kailasa temple at Kanchipuram and richly carved with epics.",
     significance: "The high point of Chalukya architecture, where Nagara and Dravida temple styles meet.",
     funFacts: ["It later served as the model for Ellora's Kailasa temple.", "Pattadakal was the Chalukyas' coronation city."],
-    commonsFile: "Virupaksha Temple, Pattadakal.jpg",
+    commonsFile: "Virupaksha Temple, Pattadakal, Karnataka.jpg",
     wikipedia: "https://en.wikipedia.org/wiki/Pattadakal", publicDomain: true,
   },
   {
@@ -846,7 +846,7 @@ export const artworks: Artwork[] = [
     story: "The idealised beauty of the Kishangarh school — arched brows, lotus eyes and a curving profile — attributed to the painter Nihâl Chand.",
     significance: "The signature image of Rajput/Pahari court painting, sometimes called the 'Indian Mona Lisa'.",
     funFacts: ["'Bani Thani' was a singer-poet at the Kishangarh court.", "India issued a postage stamp of the painting in 1973."],
-    commonsFile: "Bani Thani.jpg",
+    commonsFile: "4 Radha (Bani Thani), Kishangarh, ca. 1750, National Museum New Delhi.jpg",
     wikipedia: "https://en.wikipedia.org/wiki/Bani_Thani", publicDomain: true,
   },
 ];

@@ -44,7 +44,7 @@ async function search(q: string): Promise<string[]> {
     if (await exists(w.commonsFile)) continue;
     console.log(`\n✗ ${w.id}  "${w.title}"`);
     console.log(`   stored: ${w.commonsFile}`);
-    const q = `${w.title} ${w.medium}`.replace(/[^\w\s-]/g, " ");
+    const q = w.title.replace(/\(.*?\)/g, "").replace(/[^\w\s-]/g, " ").trim();
     const cands = await search(q);
     if (!cands.length) {
       console.log("   (no candidates — try a manual search on commons.wikimedia.org)");

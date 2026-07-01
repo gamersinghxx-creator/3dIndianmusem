@@ -66,7 +66,7 @@ function Frame({ work, url, x, z, rotY, accent }: { work: Artwork; url: string; 
   return (
     <group position={[x, 0, z]} rotation={[0, rotY, 0]}>
       <primitive object={target} position={[0, EYE, 0.4]} />
-      <spotLight position={[0, 2.1, 1.7]} angle={0.6} penumbra={0.75} intensity={26} distance={9} color={"#fff4e2"} castShadow shadow-mapSize={[1024, 1024]} target={target} />
+      <spotLight position={[0, 2.1, 1.7]} angle={0.6} penumbra={0.75} intensity={16} distance={9} color={"#fff4e2"} castShadow shadow-mapSize={[1024, 1024]} target={target} />
       <mesh position={[0, EYE, 0.02]} castShadow>
         <boxGeometry args={[W + 0.3, H + 0.3, 0.12]} />
         <meshStandardMaterial color={accent} metalness={0.8} roughness={0.34} />
@@ -77,7 +77,7 @@ function Frame({ work, url, x, z, rotY, accent }: { work: Artwork; url: string; 
       </mesh>
       <mesh position={[0, EYE, 0.12]} userData={{ workId: work.id }}>
         <planeGeometry args={[W, H]} />
-        {tex ? <meshStandardMaterial map={tex} roughness={0.5} toneMapped={false} /> : <meshStandardMaterial color={"#1b1d22"} roughness={1} />}
+        {tex ? <meshBasicMaterial map={tex} toneMapped={false} /> : <meshStandardMaterial color={"#1b1d22"} roughness={1} />}
       </mesh>
       <Text position={[0, EYE - H / 2 - 0.3, 0.13]} fontSize={0.11} maxWidth={W + 0.2} anchorX="center" anchorY="middle" color="#efe6d2" outlineWidth={0}>
         {`${work.title}\n${work.date}`}
@@ -104,7 +104,7 @@ function Hall({ length, style, title }: { length: number; style: Style; title: s
         <planeGeometry args={[HALF_W * 2, length + 8]} /><meshStandardMaterial color={style.ceiling} roughness={1} />
       </mesh>
       <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 4.96, zMid]}>
-        <planeGeometry args={[1.5, length + 6]} /><meshStandardMaterial color={style.skylight} emissive={style.skylight} emissiveIntensity={1.4} toneMapped={false} />
+        <planeGeometry args={[1.5, length + 6]} /><meshStandardMaterial color={style.skylight} emissive={style.skylight} emissiveIntensity={0.7} toneMapped={false} />
       </mesh>
       {[-1, 1].map((s) => (
         <mesh key={s} position={[s * HALF_W, 2.5, zMid]} rotation={[0, (-s * Math.PI) / 2, 0]} receiveShadow>
@@ -132,7 +132,7 @@ function Hall({ length, style, title }: { length: number; style: Style; title: s
           <mesh position={[0, 0.22, 0]}><boxGeometry args={[1.3, 0.32, 0.34]} /><meshStandardMaterial color={"#241a11"} roughness={0.8} /></mesh>
         </group>
       ))}
-      {slotZs.map((pz, i) => <pointLight key={`pl-${i}`} position={[0, 4.6, pz]} intensity={11} distance={12} color={style.key} />)}
+      {slotZs.map((pz, i) => <pointLight key={`pl-${i}`} position={[0, 4.6, pz]} intensity={5} distance={12} color={style.key} />)}
     </group>
   );
 }
@@ -221,7 +221,7 @@ export default function Gallery3D({ artist, period, works, images, tour, onInspe
   }, [placements]);
 
   return (
-    <Canvas shadows dpr={[1, 1.8]} gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.15 }} camera={{ fov: 70, near: 0.05, far: 100, position: [0, EYE, 1] }}>
+    <Canvas shadows dpr={[1, 1.8]} gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.0 }} camera={{ fov: 70, near: 0.05, far: 100, position: [0, EYE, 1] }}>
       <color attach="background" args={[bgCol]} />
       <fog attach="fog" args={[bgCol, 26, length + 60]} />
       <ambientLight intensity={style.ambient} />
@@ -245,7 +245,7 @@ export default function Gallery3D({ artist, period, works, images, tour, onInspe
         <Player active={!tour} bounds={{ zMin: -length - 1 }} onFocus={(id) => onFocus(id ? byId[id] ?? null : null)} onInspect={(id) => byId[id] && onInspect(byId[id])} onLockChange={onLockChange} />
       )}
       <EffectComposer enableNormalPass={false}>
-        <Bloom luminanceThreshold={0.8} luminanceSmoothing={0.25} intensity={0.45} mipmapBlur />
+        <Bloom luminanceThreshold={0.92} luminanceSmoothing={0.2} intensity={0.28} mipmapBlur />
         <Vignette eskil={false} offset={0.3} darkness={0.65} />
       </EffectComposer>
     </Canvas>
